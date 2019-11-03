@@ -29,7 +29,10 @@ public class Event implements Serializable
     @SerializedName("created_at")
     @Expose
     private String createdAt;
-    private final static long serialVersionUID = 2051733224120835562L;
+    @SerializedName("org")
+    @Expose
+    private Org org;
+    private final static long serialVersionUID = 2274674594457251416L;
 
     public String getId() {
         return id;
@@ -85,6 +88,14 @@ public class Event implements Serializable
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Org getOrg() {
+        return org;
+    }
+
+    public void setOrg(Org org) {
+        this.org = org;
     }
 
 }

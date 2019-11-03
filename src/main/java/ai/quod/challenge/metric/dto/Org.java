@@ -5,23 +5,64 @@ import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Org implements Serializable {
-
-    private final static long serialVersionUID = 1543137462601627501L;
+public class Org implements Serializable
+{
 
     @SerializedName("id")
-    public Integer id;
-
+    @Expose
+    private Long id;
     @SerializedName("login")
-    public String login;
-
+    @Expose
+    private String login;
     @SerializedName("gravatar_id")
-    public String gravatarId;
-
+    @Expose
+    private String gravatarId;
     @SerializedName("url")
-    public String url;
-
+    @Expose
+    private String url;
     @SerializedName("avatar_url")
-    public String avatarUrl;
+    @Expose
+    private String avatarUrl;
+    private final static long serialVersionUID = 2417745151706631958L;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public String getGravatarId() {
+        return gravatarId;
+    }
+
+    public void setGravatarId(String gravatarId) {
+        this.gravatarId = gravatarId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
 
 }
