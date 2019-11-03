@@ -25,9 +25,9 @@ public class GZipReaderTest {
         File file = new File(classLoader.getResource("testFile.gz").getFile());
 
         GZipReader gZipReader = new GZipReader();
-        Optional<Path> path = gZipReader.unzipFileToTempFile(file.getAbsolutePath());
+        Path path = gZipReader.unzipFileToTempFile(file.getAbsolutePath());
 
-        List<String> strings = Files.readAllLines(path.get());
+        List<String> strings = Files.readAllLines(path);
 
         Assert.assertEquals("ThisLineIsForTesting", strings.get(0));
     }

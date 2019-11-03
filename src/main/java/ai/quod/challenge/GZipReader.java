@@ -16,15 +16,10 @@ import java.util.zip.GZIPInputStream;
 
 public class GZipReader {
 
-    public Optional<Path> unzipFileToTempFile(String fileLocation) {
+    public Path unzipFileToTempFile(String fileLocation) {
         System.out.println("Unzipping " + fileLocation + " to temporary file");
 
-        Path tempFile = null;
-        try {
-            tempFile = buildTempFileWithReadWritePermission();
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to create temporary file", e);
-        }
+        Path tempFile = Utils.buildTempFileWithReadWritePermission();
 
         byte[] buffer = new byte[1024];
 
@@ -46,16 +41,6 @@ public class GZipReader {
 
         System.out.println("Finish Unzipping " + fileLocation + " to " + tempFile.toAbsolutePath());
 
-        return Optional.ofNullable(tempFile);
-    }
-
-    private Path buildTempFileWithReadWritePermission() throws IOException {
-        Set<PosixFilePermission> permissions = new HashSet<>();
-        permissions.add(PosixFilePermission.OWNER_READ);
-        permissions.add(PosixFilePermission.OWNER_WRITE);
-
-        FileAttribute<Set<PosixFilePermission>> fileAttributes = PosixFilePermissions.asFileAttribute(permissions);
-
-        return Files.createTempFile(this.getClass().getSimpleName(), "", fileAttributes);
+        return tempFile;
     }
 }
