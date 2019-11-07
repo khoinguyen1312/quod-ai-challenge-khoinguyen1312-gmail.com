@@ -1,4 +1,4 @@
-package ai.quod.challenge.metric;
+package ai.quod.challenge.metric.model;
 
 import java.util.HashMap;
 
