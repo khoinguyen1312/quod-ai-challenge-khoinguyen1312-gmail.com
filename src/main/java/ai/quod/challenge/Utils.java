@@ -10,6 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -83,5 +86,12 @@ public class Utils {
                 printer.printRecord(row);
             }
         }
+    }
+
+    public static Calendar parseIso8601DateFormat(String datetimeStart) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ssX");
+        cal.setTime(sdf.parse(datetimeStart));
+        return cal;
     }
 }
