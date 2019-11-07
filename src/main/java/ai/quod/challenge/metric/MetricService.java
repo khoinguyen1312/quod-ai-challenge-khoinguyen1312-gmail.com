@@ -42,6 +42,10 @@ public class MetricService {
         System.out.println(githubMetric.getMetrics());
     }
 
+    private List<List<Object>> parseToRows() {
+        
+    }
+
     private void analyzeEventToMetric(Event event) {
         try {
             if (event.getType().equals("PushEvent")) {

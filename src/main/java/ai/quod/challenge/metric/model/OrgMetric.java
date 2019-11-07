@@ -19,4 +19,8 @@ public class OrgMetric {
 
         return metrics.get(repoName);
     }
+    
+    public HashMap<String, RepoMetric> getMetrics() {
+        return metrics;
+    }
 }
