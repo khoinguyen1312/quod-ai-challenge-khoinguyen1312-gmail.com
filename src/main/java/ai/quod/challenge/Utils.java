@@ -92,12 +92,12 @@ public class Utils {
 
     public static Calendar parseIso8601DateFormat(String datetimeStart) throws ParseException {
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ssX");
-        cal.setTime(sdf.parse(datetimeStart));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ssX");
+        cal.setTime(simpleDateFormat.parse(datetimeStart));
         return cal;
     }
 
-    public static String formatUtcGithubUrlTime(Calendar time) {
+    public static String formatToUtc(Calendar time) {
         SimpleDateFormat gitHubDateFormat = new SimpleDateFormat("yyyy-MM-dd-H");
         gitHubDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         return gitHubDateFormat.format(time.getTime());

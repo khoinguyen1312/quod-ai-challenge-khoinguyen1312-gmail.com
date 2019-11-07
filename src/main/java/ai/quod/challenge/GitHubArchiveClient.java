@@ -40,7 +40,7 @@ public class GitHubArchiveClient {
     }
 
     private String buildGitHubArchiveUrl(Calendar time) {
-        String formattedDate = Utils.formatUtcGithubUrlTime(time);
+        String formattedDate = Utils.formatToUtc(time);
 
         return String.format(FILE_URL, formattedDate);
     }
