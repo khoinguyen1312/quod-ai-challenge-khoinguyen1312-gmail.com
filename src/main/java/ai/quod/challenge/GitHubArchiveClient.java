@@ -1,18 +1,10 @@
 package ai.quod.challenge;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import org.apache.commons.io.FileUtils;
 
 public class GitHubArchiveClient {
@@ -26,13 +18,9 @@ public class GitHubArchiveClient {
         this.gZipReader = gZipReader;
     }
 
-    public Path getLastOneHourArchive() {
+    public Path getOneHourArchive(Calendar time) {
 
-        Calendar timeToGetGitHubArchive = Calendar.getInstance();
-        timeToGetGitHubArchive.add(Calendar.HOUR, -2);
-        timeToGetGitHubArchive.add(Calendar.YEAR, -1);
-
-        String gitHubFileUrl = buildGitHubArchiveUrl(timeToGetGitHubArchive);
+        String gitHubFileUrl = buildGitHubArchiveUrl(time);
         System.out.println("Getting archive file: " + gitHubFileUrl);
 
         Path tempFile = Utils.buildTempFileWithReadWritePermission();
@@ -52,8 +40,7 @@ public class GitHubArchiveClient {
     }
 
     private String buildGitHubArchiveUrl(Calendar time) {
-        SimpleDateFormat gitHubDateFormat = new SimpleDateFormat("yyyy-MM-dd-H");
-        String formattedDate = gitHubDateFormat.format(time.getTime());
+        String formattedDate = Utils.formatUtcGithubUrlTime(time);
 
         return String.format(FILE_URL, formattedDate);
     }

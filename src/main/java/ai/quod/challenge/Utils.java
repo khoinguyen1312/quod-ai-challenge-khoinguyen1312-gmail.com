@@ -12,10 +12,12 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.function.Consumer;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -93,5 +95,29 @@ public class Utils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd\'T\'HH:mm:ssX");
         cal.setTime(sdf.parse(datetimeStart));
         return cal;
+    }
+
+    public static String formatUtcGithubUrlTime(Calendar time) {
+        SimpleDateFormat gitHubDateFormat = new SimpleDateFormat("yyyy-MM-dd-H");
+        gitHubDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        return gitHubDateFormat.format(time.getTime());
+    }
+
+
+    public static List<Calendar> buildGitHubTimeRange(Calendar start, Calendar end) {
+        List<Calendar> result = new ArrayList<>();
+
+        Calendar counter = Calendar.getInstance();
+        counter.setTime(start.getTime());
+
+        while (counter.compareTo(end) <= 0) {
+            Calendar cloned = Calendar.getInstance();
+            cloned.setTime(counter.getTime());
+            result.add(cloned);
+
+            counter.add(Calendar.HOUR, 1);
+        }
+
+        return result;
     }
 }

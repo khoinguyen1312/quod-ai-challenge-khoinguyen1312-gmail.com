@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -31,8 +32,16 @@ public class MetricService {
         this.githubMetric = new GithubMetric();
     }
 
-    public void buildMetric() {
-        Path lastOneHourArchive = gitHubArchiveClient.getLastOneHourArchive();
+    public void buildMetric(Calendar start, Calendar end) {
+        List<Calendar> range = Utils.buildGitHubTimeRange(start, end);
+
+        for (Calendar time : range) {
+            parseOneHour(time);
+        }
+    }
+
+    private void parseOneHour(Calendar start) {
+        Path lastOneHourArchive = gitHubArchiveClient.getOneHourArchive(start);
 
         Gson gson = new Gson();
 

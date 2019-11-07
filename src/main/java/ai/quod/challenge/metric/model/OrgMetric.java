@@ -1,7 +1,6 @@
 package ai.quod.challenge.metric.model;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 public class OrgMetric {
     public static String NONE_ORG_NAME = "None";

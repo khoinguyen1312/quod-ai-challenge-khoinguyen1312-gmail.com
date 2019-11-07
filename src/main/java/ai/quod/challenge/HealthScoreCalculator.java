@@ -1,5 +1,6 @@
 package ai.quod.challenge;
 
+import ai.quod.challenge.metric.MetricService;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Scanner;
@@ -27,7 +28,7 @@ public class HealthScoreCalculator {
         System.out.println(start.getTime());
         System.out.println(end.getTime());
 
-
-
+        MetricService metricService = new MetricService(gitHubArchiveClient);
+        metricService.buildMetric(start, end);
     }
 }

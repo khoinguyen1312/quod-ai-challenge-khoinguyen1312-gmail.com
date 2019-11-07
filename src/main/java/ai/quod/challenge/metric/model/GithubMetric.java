@@ -1,7 +1,6 @@
 package ai.quod.challenge.metric.model;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 public class GithubMetric {
 

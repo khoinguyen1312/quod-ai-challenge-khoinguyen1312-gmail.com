@@ -1,9 +1,9 @@
 
 package ai.quod.challenge.event.dto;
 
-import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 
 public class Org implements Serializable
 {
