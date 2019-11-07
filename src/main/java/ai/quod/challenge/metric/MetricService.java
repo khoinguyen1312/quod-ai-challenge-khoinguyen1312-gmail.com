@@ -7,14 +7,21 @@ import ai.quod.challenge.event.dto.Event;
 import ai.quod.challenge.event.dto.Org;
 import ai.quod.challenge.metric.model.GithubMetric;
 import ai.quod.challenge.metric.model.OrgMetric;
+import ai.quod.challenge.metric.model.RepoMetric;
 import com.google.gson.Gson;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 public class MetricService {
+
+    private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     GitHubArchiveClient gitHubArchiveClient;
     GithubMetric githubMetric;
@@ -39,11 +46,57 @@ public class MetricService {
             throw new RuntimeException("Can not access file");
         }
 
-        System.out.println(githubMetric.getMetrics());
+        parseToRows();
     }
 
-    private List<List<Object>> parseToRows() {
-        
+    private void parseToRows() {
+        List<List<String>> rows = new ArrayList<>();
+        rows.add(Arrays.asList("org","repo_name","health_score","num_commits","contributors"));
+
+        int maxNumberOfCommits = 0;
+        int maxNumberOfContributors = 0;
+
+        for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
+            for (Entry<String, RepoMetric> repoMetricEntry : orgMetricEntry.getValue().getMetrics().entrySet()) {
+                int numberOfCommits = repoMetricEntry.getValue().getShaCommits().size();
+                int numberOfContributors = repoMetricEntry.getValue().getContributors().size();
+
+                if (numberOfCommits > maxNumberOfCommits) {
+                    maxNumberOfCommits = numberOfCommits;
+                }
+
+                if (numberOfContributors > maxNumberOfContributors) {
+                    maxNumberOfContributors = numberOfContributors;
+                }
+            }
+        }
+
+
+        for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
+            String org = orgMetricEntry.getKey();
+            for (Entry<String, RepoMetric> repoMetricEntry : orgMetricEntry.getValue().getMetrics().entrySet()) {
+                String repoName = repoMetricEntry.getKey();
+
+                int numberOfCommits = repoMetricEntry.getValue().getShaCommits().size();
+                int numberOfContributors = repoMetricEntry.getValue().getContributors().size();
+
+                double healthScore = (numberOfCommits / maxNumberOfCommits) +
+                    (numberOfContributors / maxNumberOfContributors);
+
+                rows.add(Arrays.asList(
+                    org,
+                    repoName,
+                    decimalFormat.format(healthScore),
+                    Integer.valueOf(numberOfCommits).toString(),
+                    Integer.valueOf(numberOfContributors).toString()));
+            }
+        }
+
+        try {
+            Utils.createCSVFile(new File("output.csv"), rows);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void analyzeEventToMetric(Event event) {

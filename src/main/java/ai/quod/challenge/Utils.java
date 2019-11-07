@@ -3,6 +3,7 @@ package ai.quod.challenge;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,12 +11,15 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 public class Utils {
 
@@ -70,5 +74,14 @@ public class Utils {
             line = reader.readLine();
         }
         reader.close();
+    }
+
+    public static void createCSVFile(File output, List<List<String>> rows) throws IOException {
+        FileWriter out = new FileWriter(output);
+        try (CSVPrinter printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
+            for (List<String> row : rows) {
+                printer.printRecord(row);
+            }
+        }
     }
 }
