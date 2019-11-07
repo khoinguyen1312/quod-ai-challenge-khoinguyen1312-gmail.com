@@ -1,12 +1,7 @@
 package ai.quod.challenge;
 
-import ai.quod.challenge.metric.MetricService;
-import java.io.FileNotFoundException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Calendar;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class HealthScoreCalculator {
@@ -21,7 +16,7 @@ public class HealthScoreCalculator {
         String endArg = argumentScanner.next();
 
         Calendar start;
-        Calendar end
+        Calendar end;
         try {
             start = Utils.parseIso8601DateFormat(startArg);
             end = Utils.parseIso8601DateFormat(endArg);
