@@ -14,11 +14,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MetricService {
+    GitHubArchiveClient gitHubArchiveClient;
+
+    public MetricService(GitHubArchiveClient gitHubArchiveClient) {
+        this.gitHubArchiveClient = gitHubArchiveClient;
+    }
 
     public void buildMetric() {
-        Utils.activateCerificateForDownloadFromHttps();
-
-        GitHubArchiveClient gitHubArchiveClient = new GitHubArchiveClient(new GZipReader());
         Path lastOneHourArchive = gitHubArchiveClient.getLastOneHourArchive();
 
         Gson gson = new Gson();

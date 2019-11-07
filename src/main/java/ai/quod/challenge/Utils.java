@@ -63,22 +63,15 @@ public class Utils {
     }
 
     public static void forEachLineInFile(File file, Consumer<String> consumer) throws IOException {
-
         BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader(file));
-            String line = reader.readLine();
-            while (line != null) {
-                System.out.println(line);
-                // read next line
-                line = reader.readLine();
 
-                consumer.accept(line);
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        reader = new BufferedReader(new FileReader(file));
+        String line = reader.readLine();
+        while (line != null) {
+            line = reader.readLine();
+
+            consumer.accept(line);
         }
-
+        reader.close();
     }
 }
