@@ -1,5 +1,5 @@
 
-package ai.quod.challenge.metric.dto;
+package ai.quod.challenge.event.dto;
 
 import java.io.Serializable;
 import com.google.gson.annotations.Expose;

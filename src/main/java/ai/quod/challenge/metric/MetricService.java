@@ -1,17 +1,13 @@
 package ai.quod.challenge.metric;
 
-import ai.quod.challenge.GZipReader;
 import ai.quod.challenge.GitHubArchiveClient;
 import ai.quod.challenge.Utils;
-import ai.quod.challenge.metric.dto.Event;
+import ai.quod.challenge.event.dto.Event;
 import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class MetricService {
     GitHubArchiveClient gitHubArchiveClient;

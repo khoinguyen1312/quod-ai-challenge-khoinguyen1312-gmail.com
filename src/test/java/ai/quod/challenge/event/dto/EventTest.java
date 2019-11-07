@@ -1,4 +1,4 @@
-package ai.quod.challenge.metric.dto;
+package ai.quod.challenge.event.dto;
 
 import com.google.gson.Gson;
 import org.junit.Assert;
