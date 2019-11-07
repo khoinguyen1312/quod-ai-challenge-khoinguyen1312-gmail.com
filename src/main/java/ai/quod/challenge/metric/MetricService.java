@@ -93,7 +93,7 @@ public class MetricService {
         }
 
         try {
-            Utils.createCSVFile(new File("output.csv"), rows);
+            Utils.createCSVFile(new File("health_scores.csv"), rows);
         } catch (IOException e) {
             e.printStackTrace();
         }
