@@ -1,7 +1,6 @@
 package ai.quod.challenge.metric.dto;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -50,6 +49,13 @@ public class EventTest {
         Assert.assertEquals(event.getActor().getGravatarId(), "");
         Assert.assertEquals(event.getActor().getAvatarUrl(), "https://github.com/images/error/octocat_happy.gif");
         Assert.assertEquals(event.getActor().getUrl(), "https://api.github.com/users/octocat");
+        Assert.assertEquals(event.getOrg().getId(), Long.valueOf(1l));
+        Assert.assertEquals(event.getOrg().getLogin(), "github");
+        Assert.assertEquals(event.getOrg().getGravatarId(), "");
+        Assert.assertEquals(event.getOrg().getUrl(), "https://api.github.com/orgs/github");
+        Assert.assertEquals(event.getOrg().getAvatarUrl(), "https://github.com/images/error/octocat_happy.gif");
+        Assert.assertEquals(event.getCreatedAt(), "2011-09-06T17:26:27Z");
+        Assert.assertEquals(event.getId(), "12345");
     }
 
 }

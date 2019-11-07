@@ -1,5 +1,9 @@
 package ai.quod.challenge;
 
+import ai.quod.challenge.metric.dto.Event;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,6 +12,8 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -54,5 +60,25 @@ public class Utils {
         }
 
         System.setProperty("http.agent", "Chrome");
+    }
+
+    public static void forEachLineInFile(File file, Consumer<String> consumer) throws IOException {
+
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+            while (line != null) {
+                System.out.println(line);
+                // read next line
+                line = reader.readLine();
+
+                consumer.accept(line);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

@@ -22,14 +22,14 @@ public class GitHubArchiveClient {
 
     private GZipReader gZipReader;
 
-    GitHubArchiveClient(GZipReader gZipReader) {
+    public GitHubArchiveClient(GZipReader gZipReader) {
         this.gZipReader = gZipReader;
     }
 
     public Path getLastOneHourArchive() {
 
         Calendar timeToGetGitHubArchive = Calendar.getInstance();
-        timeToGetGitHubArchive.add(Calendar.HOUR, -1);
+        timeToGetGitHubArchive.add(Calendar.HOUR, -2);
         timeToGetGitHubArchive.add(Calendar.YEAR, -1);
 
         String gitHubFileUrl = buildGitHubArchiveUrl(timeToGetGitHubArchive);
@@ -52,7 +52,7 @@ public class GitHubArchiveClient {
     }
 
     private String buildGitHubArchiveUrl(Calendar time) {
-        SimpleDateFormat gitHubDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH");
+        SimpleDateFormat gitHubDateFormat = new SimpleDateFormat("yyyy-MM-dd-H");
         String formattedDate = gitHubDateFormat.format(time.getTime());
 
         return String.format(FILE_URL, formattedDate);
