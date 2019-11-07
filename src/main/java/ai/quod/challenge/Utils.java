@@ -66,9 +66,8 @@ public class Utils {
         reader = new BufferedReader(new FileReader(file));
         String line = reader.readLine();
         while (line != null) {
-            line = reader.readLine();
-
             consumer.accept(line);
+            line = reader.readLine();
         }
         reader.close();
     }
