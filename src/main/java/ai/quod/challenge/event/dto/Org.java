@@ -1,9 +1,9 @@
 
 package ai.quod.challenge.event.dto;
 
+import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import java.io.Serializable;
 
 public class Org implements Serializable
 {
@@ -23,7 +23,7 @@ public class Org implements Serializable
     @SerializedName("avatar_url")
     @Expose
     private String avatarUrl;
-    private final static long serialVersionUID = 2417745151706631958L;
+    private final static long serialVersionUID = 1775586612993920796L;
 
     public Long getId() {
         return id;

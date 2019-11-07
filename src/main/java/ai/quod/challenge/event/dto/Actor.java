@@ -1,9 +1,9 @@
 
 package ai.quod.challenge.event.dto;
 
+import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import java.io.Serializable;
 
 public class Actor implements Serializable
 {
@@ -14,6 +14,9 @@ public class Actor implements Serializable
     @SerializedName("login")
     @Expose
     private String login;
+    @SerializedName("display_login")
+    @Expose
+    private String displayLogin;
     @SerializedName("gravatar_id")
     @Expose
     private String gravatarId;
@@ -39,6 +42,14 @@ public class Actor implements Serializable
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getDisplayLogin() {
+        return displayLogin;
+    }
+
+    public void setDisplayLogin(String displayLogin) {
+        this.displayLogin = displayLogin;
     }
 
     public String getGravatarId() {

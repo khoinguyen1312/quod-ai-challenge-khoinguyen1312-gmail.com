@@ -1,13 +1,20 @@
 
 package ai.quod.challenge.event.dto;
 
+import java.io.Serializable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import java.io.Serializable;
 import java.util.List;
 
 public class Payload implements Serializable
 {
+
+    @SerializedName("action")
+    @Expose
+    private String action;
+    @SerializedName("issue")
+    @Expose
+    private Issue issue;
 
     @SerializedName("push_id")
     @Expose
@@ -31,6 +38,22 @@ public class Payload implements Serializable
     @Expose
     private List<Commit> commits = null;
     private final static long serialVersionUID = 4447815653914982966L;
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public Issue getIssue() {
+        return issue;
+    }
+
+    public void setIssue(Issue issue) {
+        this.issue = issue;
+    }
 
     public Long getPushId() {
         return pushId;

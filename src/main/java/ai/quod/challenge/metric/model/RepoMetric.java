@@ -8,6 +8,8 @@ public class RepoMetric {
 
     Set<String> contributors = new HashSet<>();
 
+
+
     public void increaseNumberOfCommits(String sha) {
             this.shaCommits.add(sha);
     }
