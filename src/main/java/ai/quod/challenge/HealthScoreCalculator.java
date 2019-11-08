@@ -11,10 +11,8 @@ public class HealthScoreCalculator {
 
         GitHubArchiveClient gitHubArchiveClient = new GitHubArchiveClient(new GZipReader());
 
-        Scanner argumentScanner = new Scanner(System.in);
-
-        String startArg = argumentScanner.next();
-        String endArg = argumentScanner.next();
+        String startArg = args[0];
+        String endArg = args[1];
 
         Calendar start;
         Calendar end;

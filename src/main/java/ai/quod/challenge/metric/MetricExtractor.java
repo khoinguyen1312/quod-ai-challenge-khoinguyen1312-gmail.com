@@ -9,15 +9,13 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 class MetricExtractor {
-
-    private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
-
     private GithubMetric githubMetric;
 
     MetricExtractor(GithubMetric githubMetric) {
@@ -25,16 +23,6 @@ class MetricExtractor {
     }
 
     void parseToRows() {
-        List<MetricExtractorRecord> records = new ArrayList<>();
-        records.add(new MetricExtractorRecord(
-            "org",
-            "repo_name",
-            "health_score",
-            "num_commits",
-            "contributors",
-            "average_hour_issue_remain_open",
-            "commit_ratio"));
-
         int maxNumberOfCommits = 0;
         int maxNumberOfContributors = 0;
 
@@ -53,6 +41,8 @@ class MetricExtractor {
             }
         }
 
+        List<MetricExtractorRecord> records = new ArrayList<>();
+
         for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
             String org = orgMetricEntry.getKey();
             for (Entry<String, RepoMetric> repoMetricEntry : orgMetricEntry.getValue().getMetrics().entrySet()) {
@@ -68,27 +58,33 @@ class MetricExtractor {
                     .mapToLong(IssueMetric::hoursIssueRemainOpen)
                     .average();
 
-                String stringOfAverageHourIssueRemainOpen = MetricService.NONE;
-
-                if (averageHourIssueRemainOpen.isPresent()) {
-                    stringOfAverageHourIssueRemainOpen = decimalFormat.format(averageHourIssueRemainOpen.getAsDouble());
-                }
-
                 double healthScore =
                     (numberOfCommits / maxNumberOfCommits) + (numberOfContributors / maxNumberOfContributors);
 
                 records.add(new MetricExtractorRecord(
                     org,
                     repoName,
-                    decimalFormat.format(healthScore),
-                    Integer.valueOf(numberOfCommits).toString(),
-                    Integer.valueOf(numberOfContributors).toString(),
-                    stringOfAverageHourIssueRemainOpen,
-                    decimalFormat.format(repoMetricEntry.getValue().getCommitPerDeveloperRatio())));
+                    healthScore,
+                    numberOfCommits,
+                    numberOfContributors,
+                    averageHourIssueRemainOpen,
+                    repoMetricEntry.getValue().getCommitPerDeveloperRatio()));
             }
         }
 
-        List<List<String>> rows = records.stream().map(MetricExtractorRecord::toRow).collect(Collectors.toList());
+        List<List<String>> rows = new ArrayList<>();
+        rows.add(Arrays.asList(
+            "org",
+            "repo_name",
+            "health_score",
+            "num_commits",
+            "contributors",
+            "average_hour_issue_remain_open",
+            "commit_ratio"));
+
+        rows.addAll(
+            records.stream().map(MetricExtractorRecord::toRow).collect(Collectors.toList())
+        );
 
         try {
             Utils.createCSVFile(new File("health_scores.csv"), rows);

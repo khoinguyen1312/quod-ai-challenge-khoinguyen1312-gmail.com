@@ -1,19 +1,25 @@
 package ai.quod.challenge.metric;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalDouble;
 
 class MetricExtractorRecord {
+
+    private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
     String org;
     String repoName;
-    String healthScore;
-    String numCommits;
-    String numContributors;
-    String averageHourIssueRemainOpen;
-    String commitRatio;
+    Double healthScore;
+    Integer numCommits;
+    Integer numContributors;
+    OptionalDouble averageHourIssueRemainOpen;
+    Double commitRatio;
 
-    public MetricExtractorRecord(String org, String repoName, String healthScore, String numCommits,
-        String numContributors, String averageHourIssueRemainOpen, String commitRatio) {
+    public MetricExtractorRecord(String org, String repoName, Double healthScore, Integer numCommits,
+        Integer numContributors, OptionalDouble averageHourIssueRemainOpen, Double commitRatio) {
         this.org = org;
         this.repoName = repoName;
         this.healthScore = healthScore;
@@ -24,12 +30,20 @@ class MetricExtractorRecord {
     }
 
     public List<String> toRow() {
-        return Arrays.asList(org,
+
+        String stringOfAverageHourIssueRemainOpen = MetricService.NONE;
+
+        if (averageHourIssueRemainOpen.isPresent()) {
+            stringOfAverageHourIssueRemainOpen = decimalFormat.format(averageHourIssueRemainOpen.getAsDouble());
+        }
+
+        return Arrays.asList(
+            org,
             repoName,
-            healthScore,
-            numCommits,
-            numContributors,
-            averageHourIssueRemainOpen,
-            commitRatio);
+            decimalFormat.format(healthScore),
+            numCommits.toString(),
+            numContributors.toString(),
+            stringOfAverageHourIssueRemainOpen,
+            decimalFormat.format(commitRatio));
     }
 }
