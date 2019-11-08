@@ -3,8 +3,6 @@ package ai.quod.challenge.metric.model;
 import java.util.HashMap;
 
 public class OrgMetric {
-    public static String NONE_ORG_NAME = "None";
-
     HashMap<String, RepoMetric> metrics;
 
     public OrgMetric() {

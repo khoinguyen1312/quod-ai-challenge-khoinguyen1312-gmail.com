@@ -27,7 +27,7 @@ class EventParser {
         String orgName = eventOptional
             .map(Event::getOrg)
             .map(Org::getLogin)
-            .orElse(OrgMetric.NONE_ORG_NAME);
+            .orElse(MetricService.NONE);
 
         Optional<String> repoOptional = eventOptional
             .map(Event::getRepo)

@@ -1,5 +1,6 @@
 package ai.quod.challenge.metric.model;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 
 public class IssueMetric {
@@ -9,5 +10,9 @@ public class IssueMetric {
     public IssueMetric(Calendar createdAt, Calendar closedAt) {
         this.createdAt = createdAt;
         this.closedAt = closedAt;
+    }
+
+    public Long hoursIssueRemainOpen() {
+        return ChronoUnit.HOURS.between(createdAt.toInstant(), closedAt.toInstant());
     }
 }

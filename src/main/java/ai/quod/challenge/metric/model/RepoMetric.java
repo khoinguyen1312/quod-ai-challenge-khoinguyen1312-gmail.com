@@ -37,4 +37,8 @@ public class RepoMetric {
     public Set<String> getContributors() {
         return contributors;
     }
+
+    public Map<String, IssueMetric> getIssueMetric() {
+        return issueMetric;
+    }
 }

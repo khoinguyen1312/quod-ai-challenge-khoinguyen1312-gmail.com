@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 
 public class MetricService {
+    static final String NONE = "None";
 
     GitHubArchiveClient gitHubArchiveClient;
     GithubMetric githubMetric;
