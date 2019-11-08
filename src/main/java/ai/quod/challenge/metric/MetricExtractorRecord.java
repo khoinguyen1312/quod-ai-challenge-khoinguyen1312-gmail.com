@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalDouble;
 
 class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
@@ -12,28 +13,31 @@ class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
 
     String org;
     String repoName;
-    Double healthScore;
     Integer numCommits;
     Integer numContributors;
-    OptionalDouble averageHourIssueRemainOpen;
-    Double commitRatio;
-    Double commitPerDay;
+    Long sumHourIssuseRemainOpen;
+    Integer numberOfIssue;
+    Double daysRange;
 
-    public MetricExtractorRecord(String org, String repoName, Double healthScore, Integer numCommits,
-        Integer numContributors, OptionalDouble averageHourIssueRemainOpen, Double commitRatio,
-        Double commitPerDay) {
+    Double healthScore;
+
+    public MetricExtractorRecord(String org, String repoName, Integer numCommits, Integer numContributors,
+        Long sumHourIssuseRemainOpen, Integer numberOfIssue, Double daysRange) {
         this.org = org;
         this.repoName = repoName;
-        this.healthScore = healthScore;
         this.numCommits = numCommits;
         this.numContributors = numContributors;
-        this.averageHourIssueRemainOpen = averageHourIssueRemainOpen;
-        this.commitRatio = commitRatio;
-        this.commitPerDay = commitPerDay;
+        this.sumHourIssuseRemainOpen = sumHourIssuseRemainOpen;
+        this.numberOfIssue = numberOfIssue;
+        this.daysRange = daysRange;
     }
 
-    public Double getHealthScore() {
-        return healthScore;
+    public String getOrg() {
+        return org;
+    }
+
+    public String getRepoName() {
+        return repoName;
     }
 
     public Integer getNumCommits() {
@@ -44,27 +48,66 @@ class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
         return numContributors;
     }
 
+    public Long getSumHourIssuseRemainOpen() {
+        return sumHourIssuseRemainOpen;
+    }
+
+    public Integer getNumberOfIssue() {
+        return numberOfIssue;
+    }
+
+    public Double getDaysRange() {
+        return daysRange;
+    }
+
     public Double getCommitRatio() {
-        return commitRatio;
+        return this.numCommits * 1.0 / this.numContributors;
+    }
+
+    public Double getCommitsPerDay() {
+        return this.numCommits * 1.0 / this.daysRange;
+    }
+
+    public Optional<Double> getAverageHourIssueRemainOpen() {
+        if (this.numberOfIssue == 0) {
+            Optional.empty();
+        }
+
+        return Optional.of(this.sumHourIssuseRemainOpen * 1.0 / this.numberOfIssue);
+    }
+
+    public void calculateHealthScore(
+        int maxNumberOfCommits,
+        int maxNumberOfContributors,
+        double minOfHourIssueRemainOpen
+    ) {
+        double scoreWithoutIssueMetric = this.numCommits * 1.0 / maxNumberOfCommits
+            + this.numContributors * 1.0 / maxNumberOfContributors;
+
+        Optional<Double> averageHourIssueRemainOpen = getAverageHourIssueRemainOpen();
+
+        if (averageHourIssueRemainOpen.isPresent()) {
+            scoreWithoutIssueMetric = scoreWithoutIssueMetric +
+                (minOfHourIssueRemainOpen / averageHourIssueRemainOpen.get());
+        }
+
+        this.healthScore = scoreWithoutIssueMetric;
+    }
+
+    public Double getHealthScore() {
+        return this.healthScore;
     }
 
     public List<String> toRow() {
-
-        String stringOfAverageHourIssueRemainOpen = MetricService.NONE;
-
-        if (averageHourIssueRemainOpen.isPresent()) {
-            stringOfAverageHourIssueRemainOpen = decimalFormat.format(averageHourIssueRemainOpen.getAsDouble());
-        }
-
         return Arrays.asList(
             org,
             repoName,
             decimalFormat.format(healthScore),
             numCommits.toString(),
             numContributors.toString(),
-            stringOfAverageHourIssueRemainOpen,
-            decimalFormat.format(commitRatio),
-            decimalFormat.format(commitPerDay)
+            getAverageHourIssueRemainOpen().map(decimalFormat::format).orElse(MetricService.NONE),
+            decimalFormat.format(getCommitRatio()),
+            decimalFormat.format(getCommitsPerDay())
         );
     }
 

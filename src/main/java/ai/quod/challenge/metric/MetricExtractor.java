@@ -25,24 +25,6 @@ class MetricExtractor {
     }
 
     void parseToRows(double daysRange) {
-        int maxNumberOfCommits = 0;
-        int maxNumberOfContributors = 0;
-
-        for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
-            for (Entry<String, RepoMetric> repoMetricEntry : orgMetricEntry.getValue().getMetrics().entrySet()) {
-                int numberOfCommits = repoMetricEntry.getValue().getNumberOfShaCommits();
-                int numberOfContributors = repoMetricEntry.getValue().getNumberOfContributors();
-
-                if (numberOfCommits > maxNumberOfCommits) {
-                    maxNumberOfCommits = numberOfCommits;
-                }
-
-                if (numberOfContributors > maxNumberOfContributors) {
-                    maxNumberOfContributors = numberOfContributors;
-                }
-            }
-        }
-
         List<MetricExtractorRecord> records = new ArrayList<>();
 
         for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
@@ -53,26 +35,22 @@ class MetricExtractor {
                 int numberOfCommits = repoMetricEntry.getValue().getNumberOfShaCommits();
                 int numberOfContributors = repoMetricEntry.getValue().getNumberOfContributors();
 
-                OptionalDouble averageHourIssueRemainOpen = repoMetricEntry.getValue()
+                long sumHourIssueRemainOpen = repoMetricEntry.getValue()
                     .getIssueMetric()
                     .values()
                     .stream()
                     .mapToLong(IssueMetric::hoursIssueRemainOpen)
-                    .average();
-
-                double healthScore =
-                    (numberOfCommits / maxNumberOfCommits) + (numberOfContributors / maxNumberOfContributors);
+                    .sum();
 
                 records.add(
                     new MetricExtractorRecord(
                         org,
                         repoName,
-                        healthScore,
                         numberOfCommits,
                         numberOfContributors,
-                        averageHourIssueRemainOpen,
-                        repoMetricEntry.getValue().getCommitPerDeveloperRatio(),
-                        repoMetricEntry.getValue().getCommitsPerDay(daysRange)
+                        sumHourIssueRemainOpen,
+                        repoMetricEntry.getValue().getIssueMetric().size(),
+                        daysRange
                     )
                 );
             }
@@ -82,6 +60,24 @@ class MetricExtractor {
     }
 
     private void printRecords(List<MetricExtractorRecord> records) {
+        int maxNumberOfCommits = records.stream()
+            .mapToInt(MetricExtractorRecord::getNumCommits)
+            .max()
+            .getAsInt();
+
+        int maxNumberOfContributors = records.stream()
+            .mapToInt(MetricExtractorRecord::getNumContributors)
+            .max()
+            .getAsInt();
+
+        double minAverageIssueRemainOpen = records.stream()
+            .filter(record -> record.getNumberOfIssue() != 0)
+            .mapToDouble(record -> record.getSumHourIssuseRemainOpen() * 1.0 / record.getNumberOfIssue())
+            .min().getAsDouble();
+
+        records.stream().forEach(record -> record
+            .calculateHealthScore(maxNumberOfCommits, maxNumberOfContributors, minAverageIssueRemainOpen));
+
         List<List<String>> rows = new ArrayList<>();
         rows.add(Arrays.asList(
             "org",
