@@ -1,19 +1,18 @@
 package ai.quod.challenge.metric.model;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
 
 public class GithubMetric {
 
     private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
     HashMap<String, OrgMetric> metrics;
+    Integer hourRange;
 
-    public GithubMetric() {
+    public GithubMetric(Integer hourRange) {
         this.metrics = new HashMap<>();
+        this.hourRange = hourRange;
     }
 
 
@@ -27,5 +26,9 @@ public class GithubMetric {
 
     public HashMap<String, OrgMetric> getMetrics() {
         return metrics;
+    }
+
+    public Integer getHourRange() {
+        return hourRange;
     }
 }

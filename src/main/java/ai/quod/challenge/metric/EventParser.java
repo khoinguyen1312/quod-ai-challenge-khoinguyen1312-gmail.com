@@ -14,13 +14,11 @@ import java.util.Optional;
 
 class EventParser {
 
-    private GithubMetric githubMetric;
+    EventParser() {
 
-    EventParser(GithubMetric githubMetric) {
-        this.githubMetric = githubMetric;
     }
 
-    void analyzeEventToMetric(Event event) {
+    void analyzeEventToMetric(Event event, GithubMetric githubMetric) {
         Optional<Event> eventOptional = Optional.ofNullable(event);
 
         String orgName = eventOptional

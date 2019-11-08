@@ -14,33 +14,33 @@ import java.util.List;
 public class MetricService {
     static final String NONE = "None";
 
-    GitHubArchiveClient gitHubArchiveClient;
-    GithubMetric githubMetric;
-    EventParser eventParser;
-    MetricExtractor metricExtractor;
+    private GitHubArchiveClient gitHubArchiveClient;
+    private EventParser eventParser;
+    private MetricExtractor metricExtractor;
 
     public MetricService(GitHubArchiveClient gitHubArchiveClient) {
         this.gitHubArchiveClient = gitHubArchiveClient;
-
-        this.githubMetric = new GithubMetric();
-        this.eventParser = new EventParser(this.githubMetric);
-        this.metricExtractor = new MetricExtractor(this.githubMetric);
+        this.eventParser = new EventParser();
+        this.metricExtractor = new MetricExtractor();
     }
 
+
     public void buildMetric(Calendar start, Calendar end) {
-        List<Calendar> range = Utils.buildGitHubTimeRange(start, end);
+        List<Calendar> hoursRange = Utils.buildGitHubTimeRange(start, end);
+        System.out.println("Detech " + hoursRange.size() + " hour archive need to proceed");
 
-        System.out.println("Detech " + range.size() + " hour archive need to proceed");
+        GithubMetric githubMetric = new GithubMetric(hoursRange.size());
+        hoursRange.parallelStream().forEach(hour -> {
+            this.parseOneHour(githubMetric, hour);
+        });
 
-        range.parallelStream().forEach(this::parseOneHour);
-
-        File output = metricExtractor.parseToRows(range.size());
+        File output = metricExtractor.writeToOutput(githubMetric);
 
         System.out.println("Output at: " + output.getAbsolutePath());
     }
 
-    private void parseOneHour(Calendar start) {
-        Path lastOneHourArchive = gitHubArchiveClient.getOneHourArchive(start);
+    private void parseOneHour(GithubMetric githubMetric, Calendar time) {
+        Path lastOneHourArchive = gitHubArchiveClient.getOneHourArchive(time);
 
         Gson gson = new Gson();
 
@@ -48,13 +48,13 @@ public class MetricService {
             Utils.forEachLineInFile(lastOneHourArchive.toFile(), line -> {
                 Event event = gson.fromJson(line, Event.class);
 
-                eventParser.analyzeEventToMetric(event);
+                eventParser.analyzeEventToMetric(event, githubMetric);
             });
         } catch (IOException e) {
             throw new RuntimeException("Can not access file");
         }
 
-        System.out.println("Finish parsing archive at " + start.getTime());
+        System.out.println("Finish parsing archive at " + time.getTime());
     }
 
 }

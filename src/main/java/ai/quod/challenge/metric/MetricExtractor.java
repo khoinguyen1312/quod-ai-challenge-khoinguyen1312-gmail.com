@@ -16,13 +16,11 @@ import java.util.stream.Collectors;
 
 class MetricExtractor {
 
-    private GithubMetric githubMetric;
+    MetricExtractor() {
 
-    MetricExtractor(GithubMetric githubMetric) {
-        this.githubMetric = githubMetric;
     }
 
-    File parseToRows(int hourRange) {
+    File writeToOutput(GithubMetric githubMetric) {
         List<MetricExtractorRecord> records = new ArrayList<>();
 
         for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
@@ -53,7 +51,8 @@ class MetricExtractor {
             }
         }
 
-        List<MetricExtractorRecordCalculated> recordCalculateds = getRecordCalculateds(records, hourRange);
+        List<MetricExtractorRecordCalculated> recordCalculateds =
+            getRecordCalculateds(records, githubMetric.getHourRange());
 
         return printRecords(recordCalculateds);
     }
