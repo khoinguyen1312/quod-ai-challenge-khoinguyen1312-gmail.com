@@ -24,6 +24,12 @@ class MetricExtractorRecord {
     }
 
     public List<String> toRow() {
-        return Arrays.asList(org, repoName, healthScore, numCommits, numContributors, averageHourIssueRemainOpen, commitRatio);
+        return Arrays.asList(org,
+            repoName,
+            healthScore,
+            numCommits,
+            numContributors,
+            averageHourIssueRemainOpen,
+            commitRatio);
     }
 }
