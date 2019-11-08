@@ -7,13 +7,11 @@ import ai.quod.challenge.metric.model.OrgMetric;
 import ai.quod.challenge.metric.model.RepoMetric;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 class MetricExtractor {
@@ -24,7 +22,7 @@ class MetricExtractor {
         this.githubMetric = githubMetric;
     }
 
-    void parseToRows(int hourRange) {
+    File parseToRows(int hourRange) {
         List<MetricExtractorRecord> records = new ArrayList<>();
 
         for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
@@ -57,7 +55,7 @@ class MetricExtractor {
 
         List<MetricExtractorRecordCalculated> recordCalculateds = getRecordCalculateds(records, hourRange);
 
-        printRecords(recordCalculateds);
+        return printRecords(recordCalculateds);
     }
 
     private List<MetricExtractorRecordCalculated> getRecordCalculateds(List<MetricExtractorRecord> records,
@@ -84,7 +82,7 @@ class MetricExtractor {
             .collect(Collectors.toList());
     }
 
-    private void printRecords(List<MetricExtractorRecordCalculated> calculatedRecords) {
+    private File printRecords(List<MetricExtractorRecordCalculated> calculatedRecords) {
         List<List<String>> rows = new ArrayList<>();
         rows.add(Arrays.asList(
             "org",
@@ -106,10 +104,17 @@ class MetricExtractor {
                 .collect(Collectors.toList())
         );
 
+        System.out.println("Writing to CSV File");
+        File output = new File("health_scores.csv");
+
         try {
-            Utils.createCSVFile(new File("health_scores.csv"), rows);
+            Utils.createCSVFile(output, rows);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Finish writing to CSV File: " + output.getAbsolutePath());
+
+        return output;
     }
 }

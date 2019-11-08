@@ -28,5 +28,7 @@ public class HealthScoreCalculator {
 
         MetricService metricService = new MetricService(gitHubArchiveClient);
         metricService.buildMetric(start, end);
+
+        System.out.println("Finish");
     }
 }

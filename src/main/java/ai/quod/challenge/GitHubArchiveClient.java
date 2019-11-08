@@ -19,12 +19,11 @@ public class GitHubArchiveClient {
     }
 
     public Path getOneHourArchive(Calendar time) {
-
         String gitHubFileUrl = buildGitHubArchiveUrl(time);
-        System.out.println("Getting archive file: " + gitHubFileUrl);
 
         Path tempFile = Utils.buildTempFileWithReadWritePermission();
 
+        System.out.println("Getting archive file: " + gitHubFileUrl + " to " + tempFile.toAbsolutePath());
         try {
             URL url = new URL(gitHubFileUrl);
             URLConnection connection = url.openConnection();
