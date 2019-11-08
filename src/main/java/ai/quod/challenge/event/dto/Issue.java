@@ -44,7 +44,7 @@ public class Issue implements Serializable
     private User user;
     @SerializedName("labels")
     @Expose
-    private List<Object> labels = null;
+    private List<Label> labels = null;
     @SerializedName("state")
     @Expose
     private String state;
@@ -53,13 +53,13 @@ public class Issue implements Serializable
     private Boolean locked;
     @SerializedName("assignee")
     @Expose
-    private Object assignee;
+    private Assignee assignee;
     @SerializedName("assignees")
     @Expose
-    private List<Object> assignees = null;
+    private List<Assignee_> assignees = null;
     @SerializedName("milestone")
     @Expose
-    private Object milestone;
+    private Milestone milestone;
     @SerializedName("comments")
     @Expose
     private Long comments;
@@ -71,7 +71,7 @@ public class Issue implements Serializable
     private String updatedAt;
     @SerializedName("closed_at")
     @Expose
-    private Object closedAt;
+    private String closedAt;
     @SerializedName("author_association")
     @Expose
     private String authorAssociation;
@@ -168,11 +168,11 @@ public class Issue implements Serializable
         this.user = user;
     }
 
-    public List<Object> getLabels() {
+    public List<Label> getLabels() {
         return labels;
     }
 
-    public void setLabels(List<Object> labels) {
+    public void setLabels(List<Label> labels) {
         this.labels = labels;
     }
 
@@ -192,27 +192,27 @@ public class Issue implements Serializable
         this.locked = locked;
     }
 
-    public Object getAssignee() {
+    public Assignee getAssignee() {
         return assignee;
     }
 
-    public void setAssignee(Object assignee) {
+    public void setAssignee(Assignee assignee) {
         this.assignee = assignee;
     }
 
-    public List<Object> getAssignees() {
+    public List<Assignee_> getAssignees() {
         return assignees;
     }
 
-    public void setAssignees(List<Object> assignees) {
+    public void setAssignees(List<Assignee_> assignees) {
         this.assignees = assignees;
     }
 
-    public Object getMilestone() {
+    public Milestone getMilestone() {
         return milestone;
     }
 
-    public void setMilestone(Object milestone) {
+    public void setMilestone(Milestone milestone) {
         this.milestone = milestone;
     }
 
@@ -240,11 +240,11 @@ public class Issue implements Serializable
         this.updatedAt = updatedAt;
     }
 
-    public Object getClosedAt() {
+    public String getClosedAt() {
         return closedAt;
     }
 
-    public void setClosedAt(Object closedAt) {
+    public void setClosedAt(String closedAt) {
         this.closedAt = closedAt;
     }
 
