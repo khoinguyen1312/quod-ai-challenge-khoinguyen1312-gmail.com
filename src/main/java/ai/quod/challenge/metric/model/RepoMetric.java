@@ -1,17 +1,19 @@
 package ai.quod.challenge.metric.model;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class RepoMetric {
-    Set<String> shaCommits = new HashSet<>();
+    Set<String> shaCommits = Collections.synchronizedSet(new HashSet<>());
 
-    Set<String> contributors = new HashSet<>();
+    Set<String> contributors = Collections.synchronizedSet(new HashSet<>());
 
-    Map<String, IssueMetric> issueMetric = new HashMap<>();
+    Map<String, IssueMetric> issueMetric = Collections.synchronizedMap(new HashMap<>());
 
     public IssueMetric addIssue(String issueUri, Calendar createdAtCalendar, Calendar closedAtCalendar) {
         if (!issueMetric.containsKey(issueUri)) {

@@ -28,9 +28,7 @@ public class MetricService {
     public void buildMetric(Calendar start, Calendar end) {
         List<Calendar> range = Utils.buildGitHubTimeRange(start, end);
 
-        for (Calendar time : range) {
-            parseOneHour(time);
-        }
+        range.parallelStream().forEach(this::parseOneHour);
 
         metricExtractor.parseToRows();
     }
