@@ -17,13 +17,14 @@ import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 class MetricExtractor {
+
     private GithubMetric githubMetric;
 
     MetricExtractor(GithubMetric githubMetric) {
         this.githubMetric = githubMetric;
     }
 
-    void parseToRows() {
+    void parseToRows(double daysRange) {
         int maxNumberOfCommits = 0;
         int maxNumberOfContributors = 0;
 
@@ -62,17 +63,25 @@ class MetricExtractor {
                 double healthScore =
                     (numberOfCommits / maxNumberOfCommits) + (numberOfContributors / maxNumberOfContributors);
 
-                records.add(new MetricExtractorRecord(
-                    org,
-                    repoName,
-                    healthScore,
-                    numberOfCommits,
-                    numberOfContributors,
-                    averageHourIssueRemainOpen,
-                    repoMetricEntry.getValue().getCommitPerDeveloperRatio()));
+                records.add(
+                    new MetricExtractorRecord(
+                        org,
+                        repoName,
+                        healthScore,
+                        numberOfCommits,
+                        numberOfContributors,
+                        averageHourIssueRemainOpen,
+                        repoMetricEntry.getValue().getCommitPerDeveloperRatio(),
+                        repoMetricEntry.getValue().getCommitsPerDay(daysRange)
+                    )
+                );
             }
         }
 
+        printRecords(records);
+    }
+
+    private void printRecords(List<MetricExtractorRecord> records) {
         List<List<String>> rows = new ArrayList<>();
         rows.add(Arrays.asList(
             "org",
@@ -81,7 +90,8 @@ class MetricExtractor {
             "num_commits",
             "contributors",
             "average_hour_issue_remain_open",
-            "commit_ratio"));
+            "commit_ratio",
+            "commit_per_day"));
 
         Collections.sort(records);
 

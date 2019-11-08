@@ -31,7 +31,7 @@ public class MetricService {
 
         range.parallelStream().forEach(this::parseOneHour);
 
-        metricExtractor.parseToRows();
+        metricExtractor.parseToRows(range.size() * 1.0 / 24);
     }
 
     private void parseOneHour(Calendar start) {

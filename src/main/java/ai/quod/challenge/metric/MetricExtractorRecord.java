@@ -17,9 +17,11 @@ class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
     Integer numContributors;
     OptionalDouble averageHourIssueRemainOpen;
     Double commitRatio;
+    Double commitPerDay;
 
     public MetricExtractorRecord(String org, String repoName, Double healthScore, Integer numCommits,
-        Integer numContributors, OptionalDouble averageHourIssueRemainOpen, Double commitRatio) {
+        Integer numContributors, OptionalDouble averageHourIssueRemainOpen, Double commitRatio,
+        Double commitPerDay) {
         this.org = org;
         this.repoName = repoName;
         this.healthScore = healthScore;
@@ -27,6 +29,7 @@ class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
         this.numContributors = numContributors;
         this.averageHourIssueRemainOpen = averageHourIssueRemainOpen;
         this.commitRatio = commitRatio;
+        this.commitPerDay = commitPerDay;
     }
 
     public Double getHealthScore() {
@@ -60,7 +63,9 @@ class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
             numCommits.toString(),
             numContributors.toString(),
             stringOfAverageHourIssueRemainOpen,
-            decimalFormat.format(commitRatio));
+            decimalFormat.format(commitRatio),
+            decimalFormat.format(commitPerDay)
+        );
     }
 
     @Override

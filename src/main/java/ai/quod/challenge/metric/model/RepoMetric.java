@@ -41,6 +41,10 @@ public class RepoMetric {
         return this.getNumberOfShaCommits() * 1.0 / this.getNumberOfContributors();
     }
 
+    public Double getCommitsPerDay(double daysRangToCalculate) {
+        return this.getNumberOfShaCommits() * 1.0 / daysRangToCalculate;
+    }
+
     public Map<String, IssueMetric> getIssueMetric() {
         return issueMetric;
     }
