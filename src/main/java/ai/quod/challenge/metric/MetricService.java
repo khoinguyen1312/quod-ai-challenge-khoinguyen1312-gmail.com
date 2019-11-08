@@ -57,6 +57,8 @@ public class MetricService {
         }
 
         System.out.println("Finish parsing archive at " + time.getTime());
+        System.out.println("Deleting file: " + lastOneHourArchive.toFile().getAbsolutePath());
+        lastOneHourArchive.toFile().delete();
     }
 
 }
