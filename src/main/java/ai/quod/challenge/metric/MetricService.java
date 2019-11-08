@@ -14,14 +14,16 @@ import java.util.List;
 public class MetricService {
     static final String NONE = "None";
 
+    int numberOfTopPrintingRecord;
+
     private GitHubArchiveClient gitHubArchiveClient;
     private EventParser eventParser;
     private MetricExtractor metricExtractor;
 
-    public MetricService(GitHubArchiveClient gitHubArchiveClient) {
+    public MetricService(int numberOfTopPrintingRecord, GitHubArchiveClient gitHubArchiveClient) {
         this.gitHubArchiveClient = gitHubArchiveClient;
         this.eventParser = new EventParser();
-        this.metricExtractor = new MetricExtractor();
+        this.metricExtractor = new MetricExtractor(numberOfTopPrintingRecord);
     }
 
 

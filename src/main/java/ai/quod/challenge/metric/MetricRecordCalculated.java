@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-class MetricExtractorRecordCalculated implements Comparable<MetricExtractorRecordCalculated> {
+class MetricRecordCalculated implements Comparable<MetricRecordCalculated> {
 
     private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
@@ -19,7 +19,7 @@ class MetricExtractorRecordCalculated implements Comparable<MetricExtractorRecor
     Double commitRatio;
     Double commitsPerDay;
 
-    public MetricExtractorRecordCalculated(String org, String repoName, Double heatlhScore, Integer numCommits,
+    MetricRecordCalculated(String org, String repoName, Double heatlhScore, Integer numCommits,
         Integer numContributors, Optional<Double> averageHoursSpendOnIssue, Double commitRatio,
         Double commitsPerDay) {
         this.org = org;
@@ -78,12 +78,12 @@ class MetricExtractorRecordCalculated implements Comparable<MetricExtractorRecor
     }
 
     @Override
-    public int compareTo(MetricExtractorRecordCalculated metricExtractorRecordCalculated) {
-        return Comparator.comparing(MetricExtractorRecordCalculated::getHeatlhScore)
-            .thenComparing(MetricExtractorRecordCalculated::getCommitsPerDay)
-            .thenComparing(MetricExtractorRecordCalculated::getCommitRatio)
-            .thenComparing(MetricExtractorRecordCalculated::getNumCommits)
-            .thenComparingInt(MetricExtractorRecordCalculated::getNumContributors)
-            .compare(this, metricExtractorRecordCalculated);
+    public int compareTo(MetricRecordCalculated metricRecordCalculated) {
+        return Comparator.comparing(MetricRecordCalculated::getHeatlhScore)
+            .thenComparing(MetricRecordCalculated::getCommitsPerDay)
+            .thenComparing(MetricRecordCalculated::getCommitRatio)
+            .thenComparing(MetricRecordCalculated::getNumCommits)
+            .thenComparingInt(MetricRecordCalculated::getNumContributors)
+            .compare(this, metricRecordCalculated);
     }
 }

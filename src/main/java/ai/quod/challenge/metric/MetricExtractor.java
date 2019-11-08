@@ -16,72 +16,81 @@ import java.util.stream.Collectors;
 
 class MetricExtractor {
 
-    MetricExtractor() {
+    int numberOfTopPrintingRecord;
 
+    MetricExtractor(int numberOfTopPrintingRecord) {
+        this.numberOfTopPrintingRecord = numberOfTopPrintingRecord;
     }
 
     File writeToOutput(GithubMetric githubMetric) {
-        List<MetricExtractorRecord> records = new ArrayList<>();
+        List<MetricRecordRaw> rawRecords = new ArrayList<>();
 
         for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
-            String org = orgMetricEntry.getKey();
+            String orgName = orgMetricEntry.getKey();
             for (Entry<String, RepoMetric> repoMetricEntry : orgMetricEntry.getValue().getMetrics().entrySet()) {
                 String repoName = repoMetricEntry.getKey();
+                RepoMetric repoMetric = repoMetricEntry.getValue();
 
-                int numberOfCommits = repoMetricEntry.getValue().getNumberOfShaCommits();
-                int numberOfContributors = repoMetricEntry.getValue().getNumberOfContributors();
+                MetricRecordRaw rawRecord = buildRawMetricRecord(orgName, repoName, repoMetric);
 
-                long sumHourIssueRemainOpen = repoMetricEntry.getValue()
-                    .getIssueMetric()
-                    .values()
-                    .stream()
-                    .mapToLong(IssueMetric::hoursIssueRemainOpen)
-                    .sum();
-
-                records.add(
-                    new MetricExtractorRecord(
-                        org,
-                        repoName,
-                        numberOfCommits,
-                        numberOfContributors,
-                        sumHourIssueRemainOpen,
-                        repoMetricEntry.getValue().getIssueMetric().size()
-                    )
+                rawRecords.add(
+                    rawRecord
                 );
             }
         }
 
-        List<MetricExtractorRecordCalculated> recordCalculateds =
-            getRecordCalculateds(records, githubMetric.getHourRange());
+        List<MetricRecordCalculated> calculatedRecords = calculateRawRecords(rawRecords, githubMetric.getHourRange());
 
-        return printRecords(recordCalculateds);
+        return printTopRecords(calculatedRecords, numberOfTopPrintingRecord);
     }
 
-    private List<MetricExtractorRecordCalculated> getRecordCalculateds(List<MetricExtractorRecord> records,
-        int hourRange) {
-        int maxNumberOfCommits = records.stream()
-            .mapToInt(MetricExtractorRecord::getNumCommits)
+    private MetricRecordRaw buildRawMetricRecord(String orgName, String repoName, RepoMetric repoMetric) {
+        int numberOfCommits = repoMetric.getNumberOfShaCommits();
+        int numberOfContributors = repoMetric.getNumberOfContributors();
+
+        long sumHourIssueRemainOpen = repoMetric
+            .getIssueMetric()
+            .values()
+            .stream()
+            .mapToLong(IssueMetric::hoursIssueRemainOpen)
+            .sum();
+
+        int numberOfIssues = repoMetric.getIssueMetric().size();
+
+        return new MetricRecordRaw(
+            orgName,
+            repoName,
+            numberOfCommits,
+            numberOfContributors,
+            sumHourIssueRemainOpen,
+            numberOfIssues
+        );
+    }
+
+    private List<MetricRecordCalculated> calculateRawRecords(List<MetricRecordRaw> rawRecords, int hourRange) {
+        int maxNumberOfCommits = rawRecords.stream()
+            .mapToInt(MetricRecordRaw::getNumCommits)
             .max()
             .getAsInt();
 
-        int maxNumberOfContributors = records.stream()
-            .mapToInt(MetricExtractorRecord::getNumContributors)
+        int maxNumberOfContributors = rawRecords.stream()
+            .mapToInt(MetricRecordRaw::getNumContributors)
             .max()
             .getAsInt();
 
-        double minAverageIssueRemainOpen = records.stream()
+        double minAverageIssueRemainOpen = rawRecords.stream()
             .filter(record -> record.getNumberOfIssue() != 0)
             .mapToDouble(record -> record.getSumHourIssuseRemainOpen() * 1.0 / record.getNumberOfIssue())
             .min().getAsDouble();
 
-        return records.stream()
-            .map(record -> record
-                .calculate(maxNumberOfCommits, maxNumberOfContributors, minAverageIssueRemainOpen, hourRange)
+        return rawRecords.stream()
+            .map(rawRecord ->
+                rawRecord.calculate(maxNumberOfCommits, maxNumberOfContributors, minAverageIssueRemainOpen, hourRange)
             )
             .collect(Collectors.toList());
     }
 
-    private File printRecords(List<MetricExtractorRecordCalculated> calculatedRecords) {
+    private File printTopRecords(List<MetricRecordCalculated> calculatedRecords, int numberOfTopPrintingRecord) {
         List<List<String>> rows = new ArrayList<>();
         rows.add(Arrays.asList(
             "org",
@@ -98,8 +107,8 @@ class MetricExtractor {
 
         rows.addAll(
             calculatedRecords.stream()
-                .limit(1000)
-                .map(MetricExtractorRecordCalculated::toRow)
+                .limit(numberOfTopPrintingRecord)
+                .map(MetricRecordCalculated::toRow)
                 .collect(Collectors.toList())
         );
 

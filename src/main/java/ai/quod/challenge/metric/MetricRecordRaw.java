@@ -3,7 +3,7 @@ package ai.quod.challenge.metric;
 import java.text.DecimalFormat;
 import java.util.Optional;
 
-class MetricExtractorRecord {
+class MetricRecordRaw {
 
     private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
@@ -14,7 +14,7 @@ class MetricExtractorRecord {
     Long sumHourIssuseRemainOpen;
     Integer numberOfIssue;
 
-    public MetricExtractorRecord(String org, String repoName, Integer numCommits, Integer numContributors,
+    MetricRecordRaw(String org, String repoName, Integer numCommits, Integer numContributors,
         Long sumHourIssuseRemainOpen, Integer numberOfIssue) {
         this.org = org;
         this.repoName = repoName;
@@ -65,7 +65,7 @@ class MetricExtractorRecord {
     }
 
 
-    public MetricExtractorRecordCalculated calculate(
+    public MetricRecordCalculated calculate(
         int maxNumberOfCommits,
         int maxNumberOfContributors,
         double minOfHourIssueRemainOpen,
@@ -74,7 +74,7 @@ class MetricExtractorRecord {
         double healthScore = calculateHealthScore(maxNumberOfCommits, maxNumberOfContributors,
             minOfHourIssueRemainOpen);
 
-        return new MetricExtractorRecordCalculated(
+        return new MetricRecordCalculated(
             this.org,
             this.repoName,
             healthScore,

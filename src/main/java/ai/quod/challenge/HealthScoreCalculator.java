@@ -3,9 +3,10 @@ package ai.quod.challenge;
 import ai.quod.challenge.metric.MetricService;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Scanner;
 
 public class HealthScoreCalculator {
+    private static final int NUMBER_OF_TOP_RECORD_WOULD_LIKE_TO_PRINT = 1000;
+
     public static void main(String[] args) {
         Utils.activateCerificateForDownloadFromHttps();
 
@@ -26,7 +27,7 @@ public class HealthScoreCalculator {
         System.out.println(start.getTime());
         System.out.println(end.getTime());
 
-        MetricService metricService = new MetricService(gitHubArchiveClient);
+        MetricService metricService = new MetricService(NUMBER_OF_TOP_RECORD_WOULD_LIKE_TO_PRINT, gitHubArchiveClient);
         metricService.buildMetric(start, end);
 
         System.out.println("Finish");
