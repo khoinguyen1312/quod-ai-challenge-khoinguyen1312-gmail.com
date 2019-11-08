@@ -1,6 +1,9 @@
 package ai.quod.challenge.metric.model;
 
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class RepoMetric {
@@ -8,7 +11,14 @@ public class RepoMetric {
 
     Set<String> contributors = new HashSet<>();
 
+    Map<String, IssueMetric> issueMetric = new HashMap<>();
 
+    public IssueMetric addIssue(String issueUri, Calendar createdAtCalendar, Calendar closedAtCalendar) {
+        if (!issueMetric.containsKey(issueUri)) {
+            issueMetric.put(issueUri, new IssueMetric(createdAtCalendar, closedAtCalendar));
+        }
+        return issueMetric.get(issueUri);
+    }
 
     public void increaseNumberOfCommits(String sha) {
             this.shaCommits.add(sha);
