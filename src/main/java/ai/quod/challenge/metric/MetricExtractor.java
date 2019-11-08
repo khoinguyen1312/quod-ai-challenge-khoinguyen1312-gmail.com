@@ -32,7 +32,8 @@ class MetricExtractor {
             "health_score",
             "num_commits",
             "contributors",
-            "average_hour_issue_remain_open"));
+            "average_hour_issue_remain_open",
+            "commit_ratio"));
 
         int maxNumberOfCommits = 0;
         int maxNumberOfContributors = 0;
@@ -82,7 +83,8 @@ class MetricExtractor {
                     decimalFormat.format(healthScore),
                     Integer.valueOf(numberOfCommits).toString(),
                     Integer.valueOf(numberOfContributors).toString(),
-                    stringOfAverageHourIssueRemainOpen));
+                    stringOfAverageHourIssueRemainOpen,
+                    decimalFormat.format(repoMetricEntry.getValue().getCommitPerDeveloperRatio())));
             }
         }
 

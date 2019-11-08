@@ -37,6 +37,10 @@ public class RepoMetric {
         return contributorToShaCommits.size();
     }
 
+    public Double getCommitPerDeveloperRatio() {
+        return this.getNumberOfShaCommits() * 1.0 / this.getNumberOfContributors();
+    }
+
     public Map<String, IssueMetric> getIssueMetric() {
         return issueMetric;
     }
