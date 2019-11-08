@@ -44,12 +44,7 @@ class EventParser {
                 githubMetric
                     .add(orgName)
                     .add(repoName)
-                    .increaseNumberOfCommits(commit.getSha());
-
-                githubMetric
-                    .add(orgName)
-                    .add(repoName)
-                    .increaseNumberOfContributors(commit.getAuthor().getEmail());
+                    .increaseNumberOfCommits(commit.getAuthor().getEmail(), commit.getSha());
             }
         }
 

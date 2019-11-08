@@ -1,17 +1,16 @@
 package ai.quod.challenge.metric.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class RepoMetric {
-    Set<String> shaCommits = Collections.synchronizedSet(new HashSet<>());
-
-    Set<String> contributors = Collections.synchronizedSet(new HashSet<>());
+    Map<String, List<String>> contributorToShaCommits = Collections.synchronizedMap(new HashMap<>());
 
     Map<String, IssueMetric> issueMetric = Collections.synchronizedMap(new HashMap<>());
 
@@ -22,20 +21,20 @@ public class RepoMetric {
         return issueMetric.get(issueUri);
     }
 
-    public void increaseNumberOfCommits(String sha) {
-            this.shaCommits.add(sha);
+    public void increaseNumberOfCommits(String contributor, String sha) {
+        if (!contributorToShaCommits.containsKey(contributor)) {
+            contributorToShaCommits.put(contributor, new ArrayList<>());
+        }
+
+        this.contributorToShaCommits.get(contributor).add(sha);
     }
 
-    public void increaseNumberOfContributors(String contributor) {
-        this.contributors.add(contributor);
+    public Integer getNumberOfShaCommits() {
+        return contributorToShaCommits.values().stream().mapToInt(List::size).sum();
     }
 
-    public Set<String> getShaCommits() {
-        return shaCommits;
-    }
-
-    public Set<String> getContributors() {
-        return contributors;
+    public Integer getNumberOfContributors() {
+        return contributorToShaCommits.size();
     }
 
     public Map<String, IssueMetric> getIssueMetric() {

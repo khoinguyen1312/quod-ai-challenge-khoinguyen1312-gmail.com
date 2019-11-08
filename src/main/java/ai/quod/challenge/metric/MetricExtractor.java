@@ -39,8 +39,8 @@ class MetricExtractor {
 
         for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
             for (Entry<String, RepoMetric> repoMetricEntry : orgMetricEntry.getValue().getMetrics().entrySet()) {
-                int numberOfCommits = repoMetricEntry.getValue().getShaCommits().size();
-                int numberOfContributors = repoMetricEntry.getValue().getContributors().size();
+                int numberOfCommits = repoMetricEntry.getValue().getNumberOfShaCommits();
+                int numberOfContributors = repoMetricEntry.getValue().getNumberOfContributors();
 
                 if (numberOfCommits > maxNumberOfCommits) {
                     maxNumberOfCommits = numberOfCommits;
@@ -57,8 +57,8 @@ class MetricExtractor {
             for (Entry<String, RepoMetric> repoMetricEntry : orgMetricEntry.getValue().getMetrics().entrySet()) {
                 String repoName = repoMetricEntry.getKey();
 
-                int numberOfCommits = repoMetricEntry.getValue().getShaCommits().size();
-                int numberOfContributors = repoMetricEntry.getValue().getContributors().size();
+                int numberOfCommits = repoMetricEntry.getValue().getNumberOfShaCommits();
+                int numberOfContributors = repoMetricEntry.getValue().getNumberOfContributors();
 
                 OptionalDouble averageHourIssueRemainOpen = repoMetricEntry.getValue()
                     .getIssueMetric()
