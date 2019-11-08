@@ -49,17 +49,19 @@ class MetricExtractor {
                         numberOfCommits,
                         numberOfContributors,
                         sumHourIssueRemainOpen,
-                        repoMetricEntry.getValue().getIssueMetric().size(),
-                        daysRange
+                        repoMetricEntry.getValue().getIssueMetric().size()
                     )
                 );
             }
         }
 
-        printRecords(records);
+        List<MetricExtractorRecordCalculated> recordCalculateds = getRecordCalculateds(records, daysRange);
+
+        printRecords(recordCalculateds);
     }
 
-    private void printRecords(List<MetricExtractorRecord> records) {
+    private List<MetricExtractorRecordCalculated> getRecordCalculateds(List<MetricExtractorRecord> records,
+        double daysRange) {
         int maxNumberOfCommits = records.stream()
             .mapToInt(MetricExtractorRecord::getNumCommits)
             .max()
@@ -75,9 +77,14 @@ class MetricExtractor {
             .mapToDouble(record -> record.getSumHourIssuseRemainOpen() * 1.0 / record.getNumberOfIssue())
             .min().getAsDouble();
 
-        records.stream().forEach(record -> record
-            .calculateHealthScore(maxNumberOfCommits, maxNumberOfContributors, minAverageIssueRemainOpen));
+        return records.stream()
+            .map(record -> record
+                .calculate(maxNumberOfCommits, maxNumberOfContributors, minAverageIssueRemainOpen, daysRange)
+            )
+            .collect(Collectors.toList());
+    }
 
+    private void printRecords(List<MetricExtractorRecordCalculated> calculatedRecords) {
         List<List<String>> rows = new ArrayList<>();
         rows.add(Arrays.asList(
             "org",
@@ -89,12 +96,13 @@ class MetricExtractor {
             "commit_ratio",
             "commit_per_day"));
 
-        Collections.sort(records);
+        Collections.sort(calculatedRecords);
+        Collections.reverse(calculatedRecords);
 
         rows.addAll(
-            records.stream()
+            calculatedRecords.stream()
                 .limit(1000)
-                .map(MetricExtractorRecord::toRow)
+                .map(MetricExtractorRecordCalculated::toRow)
                 .collect(Collectors.toList())
         );
 

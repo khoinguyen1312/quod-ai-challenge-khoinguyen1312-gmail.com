@@ -1,13 +1,9 @@
 package ai.quod.challenge.metric;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.OptionalDouble;
 
-class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
+class MetricExtractorRecord {
 
     private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
@@ -17,19 +13,15 @@ class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
     Integer numContributors;
     Long sumHourIssuseRemainOpen;
     Integer numberOfIssue;
-    Double daysRange;
-
-    Double healthScore;
 
     public MetricExtractorRecord(String org, String repoName, Integer numCommits, Integer numContributors,
-        Long sumHourIssuseRemainOpen, Integer numberOfIssue, Double daysRange) {
+        Long sumHourIssuseRemainOpen, Integer numberOfIssue) {
         this.org = org;
         this.repoName = repoName;
         this.numCommits = numCommits;
         this.numContributors = numContributors;
         this.sumHourIssuseRemainOpen = sumHourIssuseRemainOpen;
         this.numberOfIssue = numberOfIssue;
-        this.daysRange = daysRange;
     }
 
     public String getOrg() {
@@ -56,67 +48,48 @@ class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
         return numberOfIssue;
     }
 
-    public Double getDaysRange() {
-        return daysRange;
-    }
-
-    public Double getCommitRatio() {
+    private Double calculateCommitRatio() {
         return this.numCommits * 1.0 / this.numContributors;
     }
 
-    public Double getCommitsPerDay() {
-        return this.numCommits * 1.0 / this.daysRange;
+    private Double calculateCommitsPerDay(Double daysRange) {
+        return this.numCommits * 1.0 / daysRange;
     }
 
-    public Optional<Double> getAverageHourIssueRemainOpen() {
-        if (this.numberOfIssue == 0) {
-            Optional.empty();
+    private Optional<Double> calculateAverageHourIssueRemainOpen() {
+        if (this.numberOfIssue == 0 || this.sumHourIssuseRemainOpen == 0) {
+            return Optional.empty();
         }
 
         return Optional.of(this.sumHourIssuseRemainOpen * 1.0 / this.numberOfIssue);
     }
 
-    public void calculateHealthScore(
+
+    public MetricExtractorRecordCalculated calculate(
         int maxNumberOfCommits,
         int maxNumberOfContributors,
-        double minOfHourIssueRemainOpen
+        double minOfHourIssueRemainOpen,
+        double daysRange
     ) {
-        double scoreWithoutIssueMetric = this.numCommits * 1.0 / maxNumberOfCommits
+        double healthScore = this.numCommits * 1.0 / maxNumberOfCommits
             + this.numContributors * 1.0 / maxNumberOfContributors;
 
-        Optional<Double> averageHourIssueRemainOpen = getAverageHourIssueRemainOpen();
+        Optional<Double> averageHourIssueRemainOpen = calculateAverageHourIssueRemainOpen();
 
         if (averageHourIssueRemainOpen.isPresent()) {
-            scoreWithoutIssueMetric = scoreWithoutIssueMetric +
+            healthScore = healthScore +
                 (minOfHourIssueRemainOpen / averageHourIssueRemainOpen.get());
         }
 
-        this.healthScore = scoreWithoutIssueMetric;
-    }
-
-    public Double getHealthScore() {
-        return this.healthScore;
-    }
-
-    public List<String> toRow() {
-        return Arrays.asList(
-            org,
-            repoName,
-            decimalFormat.format(healthScore),
-            numCommits.toString(),
-            numContributors.toString(),
-            getAverageHourIssueRemainOpen().map(decimalFormat::format).orElse(MetricService.NONE),
-            decimalFormat.format(getCommitRatio()),
-            decimalFormat.format(getCommitsPerDay())
+        return new MetricExtractorRecordCalculated(
+            this.org,
+            this.repoName,
+            healthScore,
+            this.numCommits,
+            this.numContributors,
+            calculateAverageHourIssueRemainOpen(),
+            calculateCommitRatio(),
+            calculateCommitsPerDay(daysRange)
         );
-    }
-
-    @Override
-    public int compareTo(MetricExtractorRecord metricExtractorRecord) {
-        return Comparator.comparing(MetricExtractorRecord::getHealthScore)
-            .thenComparing(MetricExtractorRecord::getCommitRatio)
-            .thenComparing(MetricExtractorRecord::getNumCommits)
-            .thenComparingInt(MetricExtractorRecord::getNumContributors)
-            .compare(this, metricExtractorRecord);
     }
 }
