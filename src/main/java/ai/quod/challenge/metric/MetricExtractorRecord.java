@@ -71,15 +71,8 @@ class MetricExtractorRecord {
         double minOfHourIssueRemainOpen,
         double daysRange
     ) {
-        double healthScore = this.numCommits * 1.0 / maxNumberOfCommits
-            + this.numContributors * 1.0 / maxNumberOfContributors;
-
-        Optional<Double> averageHourIssueRemainOpen = calculateAverageHourIssueRemainOpen();
-
-        if (averageHourIssueRemainOpen.isPresent()) {
-            healthScore = healthScore +
-                (minOfHourIssueRemainOpen / averageHourIssueRemainOpen.get());
-        }
+        double healthScore = calculateHealthScore(maxNumberOfCommits, maxNumberOfContributors,
+            minOfHourIssueRemainOpen);
 
         return new MetricExtractorRecordCalculated(
             this.org,
@@ -91,5 +84,25 @@ class MetricExtractorRecord {
             calculateCommitRatio(),
             calculateCommitsPerDay(daysRange)
         );
+    }
+
+    private double calculateHealthScore(int maxNumberOfCommits,
+        int maxNumberOfContributors,
+        double minOfHourIssueRemainOpen) {
+
+        double healthScore = this.numCommits * 1.0 / maxNumberOfCommits
+            + this.numContributors * 1.0 / maxNumberOfContributors;
+
+        Optional<Double> averageHourIssueRemainOpen = calculateAverageHourIssueRemainOpen();
+
+        if (averageHourIssueRemainOpen.isPresent()) {
+            healthScore = healthScore +
+                (minOfHourIssueRemainOpen / averageHourIssueRemainOpen.get());
+
+            healthScore = healthScore / 3;
+        } else {
+            healthScore = healthScore / 2;
+        }
+        return healthScore;
     }
 }
