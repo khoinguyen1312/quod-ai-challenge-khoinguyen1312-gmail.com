@@ -24,7 +24,7 @@ class MetricExtractor {
         this.githubMetric = githubMetric;
     }
 
-    void parseToRows(double daysRange) {
+    void parseToRows(int hourRange) {
         List<MetricExtractorRecord> records = new ArrayList<>();
 
         for (Entry<String, OrgMetric> orgMetricEntry : githubMetric.getMetrics().entrySet()) {
@@ -55,13 +55,13 @@ class MetricExtractor {
             }
         }
 
-        List<MetricExtractorRecordCalculated> recordCalculateds = getRecordCalculateds(records, daysRange);
+        List<MetricExtractorRecordCalculated> recordCalculateds = getRecordCalculateds(records, hourRange);
 
         printRecords(recordCalculateds);
     }
 
     private List<MetricExtractorRecordCalculated> getRecordCalculateds(List<MetricExtractorRecord> records,
-        double daysRange) {
+        int hourRange) {
         int maxNumberOfCommits = records.stream()
             .mapToInt(MetricExtractorRecord::getNumCommits)
             .max()
@@ -79,7 +79,7 @@ class MetricExtractor {
 
         return records.stream()
             .map(record -> record
-                .calculate(maxNumberOfCommits, maxNumberOfContributors, minAverageIssueRemainOpen, daysRange)
+                .calculate(maxNumberOfCommits, maxNumberOfContributors, minAverageIssueRemainOpen, hourRange)
             )
             .collect(Collectors.toList());
     }

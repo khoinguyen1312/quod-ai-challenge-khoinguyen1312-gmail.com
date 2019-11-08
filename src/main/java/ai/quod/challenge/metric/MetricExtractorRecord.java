@@ -52,8 +52,8 @@ class MetricExtractorRecord {
         return this.numCommits * 1.0 / this.numContributors;
     }
 
-    private Double calculateCommitsPerDay(Double daysRange) {
-        return this.numCommits * 1.0 / daysRange;
+    private Double calculateCommitsPerDay(int hourRange) {
+        return this.numCommits * 1.0 / (hourRange / 24);
     }
 
     private Optional<Double> calculateAverageHourIssueRemainOpen() {
@@ -69,7 +69,7 @@ class MetricExtractorRecord {
         int maxNumberOfCommits,
         int maxNumberOfContributors,
         double minOfHourIssueRemainOpen,
-        double daysRange
+        int hourRange
     ) {
         double healthScore = calculateHealthScore(maxNumberOfCommits, maxNumberOfContributors,
             minOfHourIssueRemainOpen);
@@ -82,7 +82,7 @@ class MetricExtractorRecord {
             this.numContributors,
             calculateAverageHourIssueRemainOpen(),
             calculateCommitRatio(),
-            calculateCommitsPerDay(daysRange)
+            calculateCommitsPerDay(hourRange)
         );
     }
 
