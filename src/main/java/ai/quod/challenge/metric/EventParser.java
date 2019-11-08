@@ -8,7 +8,6 @@ import ai.quod.challenge.event.dto.Org;
 import ai.quod.challenge.event.dto.Payload;
 import ai.quod.challenge.event.dto.Repo;
 import ai.quod.challenge.metric.model.GithubMetric;
-import ai.quod.challenge.metric.model.OrgMetric;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Optional;

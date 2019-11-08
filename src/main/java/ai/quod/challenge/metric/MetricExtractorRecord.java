@@ -2,11 +2,11 @@ package ai.quod.challenge.metric;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.OptionalDouble;
 
-class MetricExtractorRecord {
+class MetricExtractorRecord implements Comparable<MetricExtractorRecord> {
 
     private static DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
@@ -29,6 +29,22 @@ class MetricExtractorRecord {
         this.commitRatio = commitRatio;
     }
 
+    public Double getHealthScore() {
+        return healthScore;
+    }
+
+    public Integer getNumCommits() {
+        return numCommits;
+    }
+
+    public Integer getNumContributors() {
+        return numContributors;
+    }
+
+    public Double getCommitRatio() {
+        return commitRatio;
+    }
+
     public List<String> toRow() {
 
         String stringOfAverageHourIssueRemainOpen = MetricService.NONE;
@@ -45,5 +61,14 @@ class MetricExtractorRecord {
             numContributors.toString(),
             stringOfAverageHourIssueRemainOpen,
             decimalFormat.format(commitRatio));
+    }
+
+    @Override
+    public int compareTo(MetricExtractorRecord metricExtractorRecord) {
+        return Comparator.comparing(MetricExtractorRecord::getHealthScore)
+            .thenComparing(MetricExtractorRecord::getCommitRatio)
+            .thenComparing(MetricExtractorRecord::getNumCommits)
+            .thenComparingInt(MetricExtractorRecord::getNumContributors)
+            .compare(this, metricExtractorRecord);
     }
 }

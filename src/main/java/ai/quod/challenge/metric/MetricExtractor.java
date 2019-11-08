@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.OptionalDouble;
@@ -82,8 +83,13 @@ class MetricExtractor {
             "average_hour_issue_remain_open",
             "commit_ratio"));
 
+        Collections.sort(records);
+
         rows.addAll(
-            records.stream().map(MetricExtractorRecord::toRow).collect(Collectors.toList())
+            records.stream()
+                .limit(1000)
+                .map(MetricExtractorRecord::toRow)
+                .collect(Collectors.toList())
         );
 
         try {
