@@ -53,7 +53,8 @@ class MetricRecordRaw {
     }
 
     private Double calculateCommitsPerDay(int hourRange) {
-        return this.numCommits * 1.0 / (hourRange / 24);
+        double dayRange = hourRange * 1.0 / 24.0;
+        return this.numCommits * 1.0 / dayRange;
     }
 
     private Optional<Double> calculateAverageHourIssueRemainOpen() {
